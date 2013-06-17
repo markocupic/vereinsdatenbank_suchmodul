@@ -28,9 +28,10 @@ foreach ($GLOBALS['TL_DCA']['tl_member']['fields']['categories'] as $field) {
 }
 $GLOBALS['TL_DCA']['tl_search_form']['fields']['cat'] = array(
     'inputType' => 'checkbox',
+    'default' => -1,
     'options' => $options,
     'reference' => $reference,
-    'eval' => array('multiple' => true, 'tl_class' => '')
+    'eval' => array('multiple' => true, 'includeBlankOption' => false, 'tl_class' => '', )
 );
 
 $GLOBALS['TL_DCA']['tl_search_form']['fields']['search'] = array(
@@ -63,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_search_form']['fields']['radius'] = array(
 
 $GLOBALS['TL_DCA']['tl_search_form']['fields']['limit'] = array(
     'inputType' => 'select',
-    'options' => array('10', '20', '30', '40', '50', '50'),
+    'options' => array('10', '20', '30', '40', '50', '100'),
     'eval' => array('tl_class' => '', 'labelInline' => 'after')
 );
 

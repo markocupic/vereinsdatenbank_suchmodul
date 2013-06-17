@@ -144,12 +144,12 @@ class ModuleOrganizationSearch extends ModuleMemberlist
 
             // postal code
             if (strlen($strPostal)) {
-                $strQuery .= "vdb_ansprechpartner_plz LIKE '" . $strPostal . "%' AND ";
+                $strQuery .= "postal LIKE '" . $strPostal . "%' AND ";
             }
 
             // country search
             if (count($arrCountries)) {
-                $strQuery .= "vdb_ansprechpartner_land IN ('" . strtolower(implode("', '", $arrCountries)) . "') AND ";
+                $strQuery .= "country IN ('" . strtolower(implode("', '", $arrCountries)) . "') AND ";
             }
 
             // category filter
@@ -182,6 +182,7 @@ class ModuleOrganizationSearch extends ModuleMemberlist
 
             if (!$items) {
                 $this->Template->messageType = 'empty';
+                $this->Template->message = $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['no_results_found'];
             } else {
                 // add pagination menu
                 $objPagination = new Pagination($items, $limit);
@@ -206,7 +207,6 @@ class ModuleOrganizationSearch extends ModuleMemberlist
                 $memberCoord .= '</script>' . "\r\n";
             }
         }
-
         $this->loadLanguageFile('tl_member');
         $this->loadDataContainer('tl_member');
         $this->loadLanguageFile('tl_search_form');
@@ -219,6 +219,7 @@ class ModuleOrganizationSearch extends ModuleMemberlist
                 $arrData['inputType'] = 'checkbox';
             }
 
+
             $strClass = $GLOBALS['TL_FFL'][$arrData['inputType']];
 
             // Continue if the class is not defined
@@ -227,13 +228,21 @@ class ModuleOrganizationSearch extends ModuleMemberlist
             }
             $objWidget = new $strClass($this->prepareForWidget($arrData, $fieldname));
             $objWidget->tableless = true;
+
+            // Catch the value from  $_GET[$fieldname]
+            if ($this->Input->get($fieldname)) {
+                $objWidget->value = is_array($this->Input->get($fieldname)) ? serialize($this->Input->get($fieldname)) : $this->Input->get($fieldname);
+            }
+            // Set the placeholder property
             if ($arrData['eval']['placeholder']) {
                 $objWidget->placeholder = $arrData['eval']['placeholder'];
             }
+            // Add the legend
             if ($arrData['legend']) {
                 $objWidget->legend = $arrData['legend'];
             }
 
+            // add the label before or after the formfield
             if ($arrData['eval']['labelInline']) {
                 if ($arrData['eval']['labelInline'] == 'after') {
                     $temp = $objWidget->generate();
@@ -246,6 +255,12 @@ class ModuleOrganizationSearch extends ModuleMemberlist
                 continue;
             }
             $fields[$fieldname] = $objWidget->parse();
+
+            // Quick and dirty
+            // Remove the hidden field ??? I don't know why its been generated
+            if ($fieldname == 'cat') {
+                $fields[$fieldname] = preg_replace('/<input(.*?)hidden(.*?)cat(.*?)>/', '', $fields[$fieldname]);
+            }
         }
         $this->Template->fields = $fields;
 
@@ -283,8 +298,8 @@ class ModuleOrganizationSearch extends ModuleMemberlist
             $href = ampersand($this->Environment->request, true);
         } else {
             $objTarget = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-            ->limit(1)
-            ->execute(intval($this->jumpTo));
+                ->limit(1)
+                ->execute(intval($this->jumpTo));
 
             if ($objTarget->numRows < 1) {
                 $href = ampersand($this->Environment->request, true);
