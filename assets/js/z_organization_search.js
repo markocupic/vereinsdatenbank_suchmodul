@@ -31,7 +31,7 @@ function is_object(obj) {
  * @param string url
  * @return object google.maps.Marker
  */
-function getMarker(map, pos, title, clickable, url) {
+function getMarkerFromPosition(map, pos, title, clickable, url) {
     var objOptions = {
         map:map,
         position:pos
@@ -40,7 +40,6 @@ function getMarker(map, pos, title, clickable, url) {
     if (title != '') {
         objOptions.title = title;
     }
-
     var marker = new google.maps.Marker(objOptions);
 
     if (clickable && url != '') {
@@ -50,6 +49,27 @@ function getMarker(map, pos, title, clickable, url) {
     }
 
     return marker;
+}
+/**
+ *
+ * @param map
+ * @param address
+ * @param title
+ * @param url
+ */
+function getMarkerFromAddress(map, address, title, clickable, url) {
+    var geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode({ 'address':address}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            var pos = results[0].geometry.location;
+            var marker = getMarkerFromPosition(map, pos, title, clickable, url);
+            return marker;
+        } else {
+            //alert("Geocode was not successful for the following reason: " + status);
+            return null;
+        }
+    });
 }
 
 
@@ -144,13 +164,13 @@ window.addEvent('domready', function () {
                 map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
                 var pos = new google.maps.LatLng(document.id('ctrl_lat').getProperty('value'), document.id('ctrl_lng').getProperty('value'));
-                var marker = getMarker(map, pos, 'Ihr Standort', false, null);
+                var marker = getMarkerFromPosition(map, pos, 'Ihr Standort', false, null);
                 var circle = new google.maps.Circle({
-                    map: map,
-                    center: pos,
-                    radius: document.id('ctrl_radius').getProperty('value')*1000,
-                    strokeWeight: 0,
-                    fillColor: 'green'
+                    map:map,
+                    center:pos,
+                    radius:document.id('ctrl_radius').getProperty('value') * 1000,
+                    strokeWeight:0,
+                    fillColor:'green'
                 });
             }
         }
@@ -179,20 +199,30 @@ window.addEvent('domready', function () {
             for (key in objCoord) {
                 var title = objCoord[key]['title'];
                 var url = objCoord[key]['url'] != '' ? objCoord[key]['url'] : null;
-                var pos = new google.maps.LatLng(objCoord[key]['lat'], objCoord[key]['lng']);
-                var marker = getMarker(map, pos, title, true, url);
+                if (objCoord[key]['lat'] == '' || objCoord[key]['lat'] == '') {
+                    var address = objCoord[key]['street'] + ', ' + objCoord[key]['city'] + ', ' + objCoord[key]['country'];
+                    var marker = getMarkerFromAddress(map, address, title, true, url);
+
+                } else {
+                    var pos = new google.maps.LatLng(objCoord[key]['lat'], objCoord[key]['lng']);
+                    var marker = getMarkerFromPosition(map, pos, title, true, url);
+                }
+
             }
-            if (getParam('lat') && getParam('lng') && getParam('radius'))
-            {
+            if (getParam('lat') && getParam('lng') && getParam('radius')) {
                 var circle = new google.maps.Circle({
-                    map: map,
-                    center: new google.maps.LatLng(getParam('lat'), getParam('lng')),
-                    radius: getParam('radius')*1000,
-                    strokeWeight: 0,
-                    fillColor: 'green'
+                    map:map,
+                    center:new google.maps.LatLng(getParam('lat'), getParam('lng')),
+                    radius:getParam('radius') * 1000,
+                    strokeWeight:0,
+                    fillColor:'green'
                 });
             }
         };
         initializeMap(objCoord[0]['lat'], objCoord[0]['lng']);
     }
 });
+
+
+
+

@@ -32,4 +32,50 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{config_legend},jumpTo,ml_groups,ml_fields;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{config_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche_detail_view'] = '{title_legend},name,headline,type;{config_legend},vdb_viewable_fields;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['vdb_viewable_fields'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['vdb_viewable_fields'],
+    'exclude' => true,
+    'inputType' => 'checkboxWizard',
+    'options_callback' => array('tl_module_vereinsdatenbank_suchmodul', 'getViewableMemberProperties'),
+    'eval' => array('mandatory' => true, 'multiple' => true)
+);
+
+/**
+ * Class tl_module_memberlist
+ *
+ * Provide miscellaneous methods that are used by the data configuration array.
+ * @copyright  Leo Feyer 2008-2011
+ * @author     Leo Feyer <http://www.contao.org>
+ * @package    Controller
+ */
+class tl_module_vereinsdatenbank_suchmodul extends Backend
+{
+
+    /**
+     * Return all editable fields of table tl_member
+     * @return array
+     */
+    public function getViewableMemberProperties()
+    {
+        $options = array();
+
+        $this->loadLanguageFile('tl_member');
+        $this->loadDataContainer('tl_member');
+
+        foreach ($GLOBALS['TL_DCA']['tl_member']['fields'] as $k => $v) {
+            if ($k == 'password' || $k == 'newsletter' || $k == 'publicFields' || $k == 'allowEmail') {
+                continue;
+            }
+
+            if ($v['eval']['feViewable']) {
+                $options[$k] = $GLOBALS['TL_DCA']['tl_member']['fields'][$k]['label'][0];
+            }
+        }
+
+        return $options;
+    }
+}

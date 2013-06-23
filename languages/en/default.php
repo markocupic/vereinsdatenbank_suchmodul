@@ -30,3 +30,7 @@ $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['all'] = 'alle';
 $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['clear_form'] = 'Formular leeren';
 $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['start_search'] = 'Suche starten';
 
+// Detailview
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections'] = 'Tätigkeitsbereiche';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['contact person'] = 'Ansprechperson';
+

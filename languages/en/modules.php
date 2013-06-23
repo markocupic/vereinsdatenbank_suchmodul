@@ -33,4 +33,4 @@
  * Frontend modules
  */
 $GLOBALS['TL_LANG']['FMD']['vereinsuche'] = array('Suchmodul für Vereine');
-
+$GLOBALS['TL_LANG']['FMD']['vereinsuche_detail_view'] = array('Suchmodul für Vereine Detailansicht');

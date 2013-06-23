@@ -7,9 +7,15 @@
 -- *                                                        *
 -- **********************************************************
 
--- 
--- Table `tl_member`
--- 
+-- --------------------------------------------------------
+
+--
+-- Table `tl_module`
+--
+
+CREATE TABLE `tl_module` (
+  `vdb_viewable_fields` blob NULL,
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 

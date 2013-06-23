@@ -1,0 +1,68 @@
+<?php
+$GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/z_organization_search.js";
+$GLOBALS['TL_JAVASCRIPT'][] = "https://maps.google.com/maps/api/js?sensor=false";
+$GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false";
+?>
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?>
+<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
+
+
+<table>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_vereinsname'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_vereinsname']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections']; ?></td>
+        <td class="col_1"><?php echo $this->strSections; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_wer_ist_engagiert'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_wer_ist_engagiert']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_taetigkeitsmerkmale'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_taetigkeitsmerkmale']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_egagiert_fuer'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_egagiert_fuer']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_aktiv_engagierte_mitglieder'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_aktiv_engagierte_mitglieder']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_unterstuetzer'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_unterstuetzer']; ?></td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['contact person']; ?></td>
+        <td class="col_1">
+            <?php echo $this->arrRecord['firstname'] . ' ' . $this->arrRecord['lastname'] . '<br>'; ?>
+            <?php echo $this->arrRecord['street'] . '<br>'; ?>
+            <?php echo strtoupper($this->arrRecord['country']) . '-' . $this->arrRecord['postal'] . ' ' . $this->arrRecord['city'] . '<br>'; ?>
+            <?php if ($this->arrRecord['phone']): ?>Tel: <?php echo $this->arrRecord['phone'] . '<br>'; ?><?php endif; ?>
+            <?php if ($this->arrRecord['fax']): ?>Fax: <?php echo $this->arrRecord['fax'] . '<br>'; ?><?php endif; ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_besondere_aktion'][0]; ?></td>
+        <td class="col_1"><?php echo $this->arrRecord['vdb_besondere_aktion']; ?></td>
+    </tr>
+    <?php if ($this->image): ?>
+    <tr>
+        <td class="col_0"></td>
+        <td class="col_1"><?php echo $this->image; ?></td>
+    </tr>
+    <?php endif; ?>
+
+
+
+</table>
+</div>
+<!-- indexer::continue -->

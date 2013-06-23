@@ -26,7 +26,7 @@
  * ft_min_word_len=3
  * take care about stopwords -> http://dev.mysql.com/doc/refman/5.1/de/fulltext-stopwords.html
  */
-class ModuleOrganizationSearch extends ModuleMemberlist
+class ModuleOrganizationSearch extends Module
 {
     protected $strTemplate = 'mod_organization_search';
 
@@ -40,7 +40,7 @@ class ModuleOrganizationSearch extends ModuleMemberlist
         }
 
         // add FULLTEXT KEY to tl_member
-        //$this->Database->query('ALTER TABLE tl_member DROP INDEX `organization`');
+        $this->Database->query('ALTER TABLE tl_member DROP INDEX `vdb_vereinsdatenbank_suche`');
         $this->arrSearchableFields = array(vdb_vereinsname, firstname, lastname, city, vdb_taetigkeitsmerkmale, vdb_taetigkeitsmerkmale_zweitsprache, vdb_egagiert_fuer, vdb_egagiert_fuer_zweitsprache, vdb_besondere_aktion, vdb_besondere_aktion_zweitsprache);
         $objKey = $this->Database->prepare('SHOW INDEX FROM tl_member WHERE Key_name=?')->execute('vdb_vereinsdatenbank_suche');
         if (!$objKey->numRows) {
@@ -77,7 +77,25 @@ class ModuleOrganizationSearch extends ModuleMemberlist
 
     protected function compile()
     {
-        // first load language files and dca
+
+        // auto detect vdb_lat_coord && vdb_lng_coord
+        if (function_exists('curl_init')) {
+            $objMember = $this->Database->execute("SELECT * FROM tl_member WHERE vdb_belongs_to_vdb=true AND (vdb_lat_coord='' OR vdb_lng_coord='')");
+            while ($objMember->next()) {
+                $strAddress = str_replace(' ', '+', $objMember->street) . ',+' . str_replace(' ', '+', $objMember->city) . ',+' . $objMember->country;
+                $arrPos = $this->curl_getCoord(sprintf('http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false', $strAddress));
+                if (is_array($arrPos[results][0]['geometry'])) {
+                    $latPos = $arrPos[results][0]['geometry']['location']['lat'];
+                    $lngPos = $arrPos[results][0]['geometry']['location']['lng'];
+                    $set = array(
+                        'vdb_lat_coord' => $latPos,
+                        'vdb_lng_coord' => $lngPos
+                    );
+                    $this->Database->prepare("UPDATE tl_member %s WHERE id=?")->set($set)->executeUncached($objMember->id);
+                }
+            }
+        }
+
         $this->loadLanguageFile('tl_member');
         $this->loadDataContainer('tl_member');
 
@@ -134,7 +152,7 @@ class ModuleOrganizationSearch extends ModuleMemberlist
             // radius filter
             if (strlen($intRadius) && strlen($strLat) && strlen($strLng)) {
                 // GoogleDistance_km(geo_breitengrad_punktA, geo_laengengrad_punktA, geo_breitengrad_punktB, geo_laengengrad_punktB) <= 100
-                $strQuery .= sprintf("cm_membergooglemaps_lat > 0 AND cm_membergooglemaps_lng > 0 AND GoogleDistance_km(cm_membergooglemaps_lat, cm_membergooglemaps_lng, '%s', '%s') <= '%s' AND ", $strLat, $strLng, $intRadius);
+                $strQuery .= sprintf("vdb_lat_coord > 0 AND vdb_lng_coord > 0 AND GoogleDistance_km(vdb_lat_coord, vdb_lng_coord, '%s', '%s') <= '%s' AND ", $strLat, $strLng, $intRadius);
             }
 
             // tag search
@@ -194,13 +212,8 @@ class ModuleOrganizationSearch extends ModuleMemberlist
                 $memberCoord = '<script>' . "\r\n";
                 $memberCoord .= 'objCoord = {' . "\r\n";
                 while ($objMembers->next()) {
-
-                    $memberCoord .= sprintf("'%s': {'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s'},", $i, $objMembers->firstname . ' ' . $objMembers->lastname, $objMembers->cm_membergooglemaps_lat, $objMembers->cm_membergooglemaps_lng, sprintf($this->getJumpToHref(), $objMembers->id)) . "\r\n";
-                    $arrResults[$i]['id'] = $objMembers->id;
-                    foreach (unserialize($this->ml_fields) as $field) {
-                        $arrPublicFields = is_array(unserialize($objMembers->publicFields)) ? unserialize($objMembers->publicFields) : array();
-                        $arrResults[$i][$field] = in_array($field, $arrPublicFields) ? $objMembers->{$field} : '-';
-                    }
+                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s'},", $i, $objMembers->street, $objMembers->city, $objMembers->country, $objMembers->firstname . ' ' . $objMembers->lastname, $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id)) . "\r\n";
+                    $arrResults[$i] = $objMembers->row();
                     $i++;
                 }
                 $memberCoord .= '};' . "\r\n";
@@ -292,14 +305,15 @@ class ModuleOrganizationSearch extends ModuleMemberlist
      * generate the jumpTo link to the detailview
      * @return string
      */
-    private function getJumpToHref()
+    private
+    function getJumpToHref()
     {
         if ($this->jumpTo < 1) {
             $href = ampersand($this->Environment->request, true);
         } else {
             $objTarget = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-                ->limit(1)
-                ->execute(intval($this->jumpTo));
+            ->limit(1)
+            ->execute(intval($this->jumpTo));
 
             if ($objTarget->numRows < 1) {
                 $href = ampersand($this->Environment->request, true);
@@ -318,7 +332,8 @@ class ModuleOrganizationSearch extends ModuleMemberlist
      * @param $pointA
      * @param $pointB
      */
-    public function getDistance($pointA, $pointB)
+    public
+    function getDistance($pointA, $pointB)
     {
         // factor
         $f = M_PI / 180;
@@ -330,5 +345,50 @@ class ModuleOrganizationSearch extends ModuleMemberlist
 
         return round(acos(sin($b_lat) * sin($a_lat) + cos($b_lat) * cos($a_lat) * cos($b_lng - $a_lng)) * $r, 2);
     }
+
+    /**
+     * @param string $url
+     * @return array
+     */
+    public function curl_getCoord($url)
+    {
+        // is cURL installed yet?
+        if (!function_exists('curl_init')) {
+            die('Sorry cURL is not installed!');
+        }
+
+        // OK cool - then let's create a new cURL resource handle
+        $ch = curl_init();
+
+        // Now set some options (most are optional)
+
+        // Set URL to download
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        // Set a referer
+        //curl_setopt($ch, CURLOPT_REFERER, "http://www.kletterkader.com");
+
+        // User agent
+        //curl_setopt($ch, CURLOPT_USERAGENT, "MozillaXYZ/1.0");
+
+        // Include header in result? (0 = yes, 1 = no)
+        //curl_setopt($ch, CURLOPT_HEADER, 0);
+
+        // Should cURL return or print out the data? (true = return, false = print)
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Timeout in seconds
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+        // Download the given URL, and return output
+        $arrOutput = json_decode(curl_exec($ch), true);
+
+        // Close the cURL resource, and free system resources
+        curl_close($ch);
+
+        return $arrOutput;
+    }
+
+
 }
 
