@@ -84,7 +84,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
             <input type="submit" class="submit" value="<?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['start_search']; ?>"/>
             <input type="reset"  class="reset" value="<?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['clear_form']; ?>" onclick="return clearForm()">
         </div>
-        <div id="map-canvas" style="display:none; width:100%; height:400px"></div>
+        <div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
 
     </div>
 
@@ -133,11 +133,12 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
             <div class="duration"><?php echo sprintf($GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['request_time_duration'], $this->duration); ?></div>
         </div>
     </div>
-    <div id="map-canvas" style="display:none; width:100%; height:400px"></div>
-
+    <?php if($this->vdb_showMap): ?>
+    <div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
+    <?php endif; ?>
 <?php echo $this->memberCoord; ?>
 
-
+<?php //echo $this->showTemplateVars(); ?>
 <?php endif; ?>
 </div>
 <!-- indexer::continue -->

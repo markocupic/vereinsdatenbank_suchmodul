@@ -34,3 +34,11 @@ $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['start_search'] = 'Suche start
 $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections'] = 'Tätigkeitsbereiche';
 $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['contact person'] = 'Ansprechperson';
 
+// message form
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['send_email'] = 'Kontaktformular';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['name'] = 'Ihr Name';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['replyto'] = 'Absender (Ihre E-Mail Adresse)';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['subject'] = 'Sie haben eine Nachricht von %s (%s)';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['message'] = 'Nachricht';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['send_message'] = 'Nachricht senden';
+$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['message_sent'] = 'Ihre Nachricht wurde erfolgreich gesendet.';

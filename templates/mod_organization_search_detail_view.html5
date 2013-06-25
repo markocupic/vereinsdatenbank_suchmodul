@@ -10,11 +10,12 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
 <?php endif; ?>
 
-
+<?php if (!$this->confirm): ?>
+<!-- result table -->
 <table>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_vereinsname'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_vereinsname']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_vereinsname; ?></td>
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections']; ?></td>
@@ -22,38 +23,58 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_wer_ist_engagiert'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_wer_ist_engagiert']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_wer_ist_engagiert; ?></td>
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_taetigkeitsmerkmale'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_taetigkeitsmerkmale']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_taetigkeitsmerkmale; ?></td>
     </tr>
+    <?php if ($this->vdb_taetigkeitsmerkmale_zweitsprache != ""): ?>
+    <tr class="zweitsprache">
+        <td class="col_0"></td>
+        <td class="col_1"><?php echo $this->vdb_taetigkeitsmerkmale_zweitsprache; ?></td>
+    </tr>
+    <?php endif; ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_egagiert_fuer'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_egagiert_fuer']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_egagiert_fuer; ?></td>
     </tr>
+    <?php if ($this->vdb_egagiert_fuer_zweitsprache != ""): ?>
+    <tr class="zweitsprache">
+        <td class="col_0"></td>
+        <td class="col_1"><?php echo $this->vdb_egagiert_fuer_zweitsprache; ?></td>
+    </tr>
+    <?php endif; ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_aktiv_engagierte_mitglieder'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_aktiv_engagierte_mitglieder']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_aktiv_engagierte_mitglieder; ?></td>
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_unterstuetzer'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_unterstuetzer']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_unterstuetzer; ?></td>
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['contact person']; ?></td>
         <td class="col_1">
-            <?php echo $this->arrRecord['firstname'] . ' ' . $this->arrRecord['lastname'] . '<br>'; ?>
-            <?php echo $this->arrRecord['street'] . '<br>'; ?>
-            <?php echo strtoupper($this->arrRecord['country']) . '-' . $this->arrRecord['postal'] . ' ' . $this->arrRecord['city'] . '<br>'; ?>
-            <?php if ($this->arrRecord['phone']): ?>Tel: <?php echo $this->arrRecord['phone'] . '<br>'; ?><?php endif; ?>
-            <?php if ($this->arrRecord['fax']): ?>Fax: <?php echo $this->arrRecord['fax'] . '<br>'; ?><?php endif; ?>
+            <?php echo $this->firstname . ' ' . $this->lastname . '<br>'; ?>
+            <?php echo $this->street . '<br>'; ?>
+            <?php echo strtoupper($this->country) . '-' . $this->postal . ' ' .
+            $this->city . '<br>'; ?>
+            <?php if ($this->phone): ?>Tel: <?php echo $this->phone . '<br>';
+            ?><?php endif; ?>
+            <?php if ($this->fax): ?>Fax: <?php echo $this->fax . '<br>'; ?><?php endif; ?>
         </td>
     </tr>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_besondere_aktion'][0]; ?></td>
-        <td class="col_1"><?php echo $this->arrRecord['vdb_besondere_aktion']; ?></td>
+        <td class="col_1"><?php echo $this->vdb_besondere_aktion; ?></td>
     </tr>
+    <?php if ($this->vdb_besondere_aktion_zweitsprache != ""): ?>
+    <tr class="zweitsprache">
+        <td class="col_0"></td>
+        <td class="col_1"><?php echo $this->vdb_besondere_aktion_zweitsprache; ?></td>
+    </tr>
+    <?php endif; ?>
     <?php if ($this->image): ?>
     <tr>
         <td class="col_0"></td>
@@ -62,7 +83,95 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     <?php endif; ?>
 
 
-
 </table>
+<?php endif; ?>
+
+
+
+
+
+<?php if ($this->allowEmail): ?>
+
+<?php if ($this->confirm): ?>
+
+<p class="confirm"><?php echo $this->confirm; ?></p>
+<a href="javascript:history.go(0)" onclick="history.go(0)">zurück</a>
+
+<?php else: ?>
+
+<!-- message form -->
+<a href="javascript:false" class="hyperlink_txt" title="Nachricht senden" onclick="showOverlay();return false;">Nachricht senden</a>
+
+<div id="overlay" style="visibility:hidden"></div>
+
+<div id="center" style="visibility:hidden">
+<h2><?php echo $this->sendEmail; ?></h2>
+<form action="<?php echo $this->action; ?>" method="post">
+    <div class="formbody email_form">
+        <input type="hidden" name="FORM_SUBMIT" value="tl_send_email" />
+        <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+        <div class="formfields">
+            <?php echo $this->nameWidget->generateLabel(); ?><span class="mandatory"></span>
+            <?php echo $this->nameWidget->generateWithError(); ?><br>
+
+            <?php echo $this->emailWidget->generateLabel(); ?><span class="mandatory"></span>
+            <?php echo $this->emailWidget->generateWithError(); ?><br>
+
+            <?php echo $this->messageWidget->generateLabel(); ?><span class="mandatory"></span>
+            <?php echo $this->messageWidget->generateWithError(); ?><br>
+            <div class="captcha">
+            <?php echo $this->captchaWidget->generateLabel(); ?><span class="mandatory"></span>
+            <?php echo $this->captchaWidget->generateWithError(); ?>
+            <label for="ctrl_captcha"><?php echo $this->captchaWidget->generateQuestion(); ?><span class="mandatory"></span></label>
+            </div>
+        </div>
+        <div class="submit_container">
+            <input type="submit" value="<?php echo $this->submit; ?>" class="submit" />
+        </div>
+    </div>
+</form>
 </div>
+<?php endif; ?>
+<?php endif; ?>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+window.addEvent('domready',function(){
+
+    showOverlay = function(){
+        document.id('overlay').setStyles({
+            visibility: 'visible'
+        });
+        document.id('overlay').fade(0.7);
+
+        document.id('center').setStyles({
+            visibility: 'visible'
+        });
+        document.id('center').fade(1);
+    }
+
+    document.id('overlay').addEvent('click',function(){
+        hideOverlay();
+    });
+
+     hideOverlay = function()
+    {
+        document.id('overlay').fade(0);
+        document.id('center').fade(0);
+    }
+});
+
+
+</script>
+<?php if ($this->hasErrors): ?>
+<script type="text/javascript">
+    window.addEvent('domready',function(){
+       showOverlay();
+    });
+</script>
+<?php endif; ?>
 <!-- indexer::continue -->

@@ -132,7 +132,7 @@ window.addEvent('domready', function () {
                     var lng = results[0].geometry.location.lng();
                     document.id('ctrl_lat').setProperty('value', lat.round(5));
                     document.id('ctrl_lng').setProperty('value', lng.round(5));
-                    initializeMap(lat, lng);
+                    initializeLocationMap(lat, lng);
                 }
             });
         }
@@ -153,7 +153,7 @@ window.addEvent('domready', function () {
 
         // add the map to the bottom to display the location
         var map;
-        var initializeMap = function (lat, lng) {
+        var initializeLocationMap = function (lat, lng) {
             if (document.id('map-canvas')) {
                 document.id('map-canvas').setStyle('display', 'block');
                 var mapOptions = {
@@ -187,7 +187,7 @@ window.addEvent('domready', function () {
     if (document.id('map-canvas') && typeof objCoord != 'undefined') {
         // add the map to the bottom
         var map;
-        initializeMap = function (lat, lng) {
+        initializeResultListMap = function (lat, lng) {
             document.id('map-canvas').setStyle('display', 'block');
             var mapOptions = {
                 zoom:9,
@@ -219,7 +219,10 @@ window.addEvent('domready', function () {
                 });
             }
         };
-        initializeMap(objCoord[0]['lat'], objCoord[0]['lng']);
+        // initialize map
+        if (document.id('map-canvas')) {
+            initializeResultListMap(objCoord[0]['lat'], objCoord[0]['lng']);
+        }
     }
 });
 

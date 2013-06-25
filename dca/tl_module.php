@@ -32,8 +32,11 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{config_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche_detail_view'] = '{title_legend},name,headline,type;{config_legend},vdb_viewable_fields;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{config_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche_detail_view'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{config_legend},vdb_viewable_fields;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'vdb_showMap';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['vdb_showMap'] = 'vdb_mapWidth,vdb_mapHeight';
+
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['vdb_viewable_fields'] = array
 (
@@ -42,6 +45,30 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['vdb_viewable_fields'] = array
     'inputType' => 'checkboxWizard',
     'options_callback' => array('tl_module_vereinsdatenbank_suchmodul', 'getViewableMemberProperties'),
     'eval' => array('mandatory' => true, 'multiple' => true)
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['vdb_showMap'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['vdb_showMap'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array('submitOnChange' => true, 'tl_class' => 'clr')
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['vdb_mapWidth'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['vdb_mapWidth'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit')
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['vdb_mapHeight'] = array
+(
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['vdb_mapHeight'],
+    'exclude' => true,
+    'inputType' => 'text',
+    'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit')
 );
 
 /**

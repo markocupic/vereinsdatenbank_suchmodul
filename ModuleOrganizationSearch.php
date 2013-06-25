@@ -40,7 +40,10 @@ class ModuleOrganizationSearch extends Module
         }
 
         // add FULLTEXT KEY to tl_member
+        try{
         $this->Database->query('ALTER TABLE tl_member DROP INDEX `vdb_vereinsdatenbank_suche`');
+        }catch (Exception $e)
+        {}
         $this->arrSearchableFields = array(vdb_vereinsname, firstname, lastname, city, vdb_taetigkeitsmerkmale, vdb_taetigkeitsmerkmale_zweitsprache, vdb_egagiert_fuer, vdb_egagiert_fuer_zweitsprache, vdb_besondere_aktion, vdb_besondere_aktion_zweitsprache);
         $objKey = $this->Database->prepare('SHOW INDEX FROM tl_member WHERE Key_name=?')->execute('vdb_vereinsdatenbank_suche');
         if (!$objKey->numRows) {
@@ -212,7 +215,7 @@ class ModuleOrganizationSearch extends Module
                 $memberCoord = '<script>' . "\r\n";
                 $memberCoord .= 'objCoord = {' . "\r\n";
                 while ($objMembers->next()) {
-                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s'},", $i, $objMembers->street, $objMembers->city, $objMembers->country, $objMembers->firstname . ' ' . $objMembers->lastname, $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id)) . "\r\n";
+                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s'},", $i, str_replace("'", "`", $objMembers->street), str_replace("'", "`", $objMembers->city), $objMembers->country, str_replace("'", "`", $objMembers->vdb_vereinsname), $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id)) . "\r\n";
                     $arrResults[$i] = $objMembers->row();
                     $i++;
                 }
@@ -312,8 +315,8 @@ class ModuleOrganizationSearch extends Module
             $href = ampersand($this->Environment->request, true);
         } else {
             $objTarget = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-            ->limit(1)
-            ->execute(intval($this->jumpTo));
+                ->limit(1)
+                ->execute(intval($this->jumpTo));
 
             if ($objTarget->numRows < 1) {
                 $href = ampersand($this->Environment->request, true);

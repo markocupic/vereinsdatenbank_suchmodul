@@ -45,11 +45,14 @@ class ModuleOrganizationSearchDetailView extends Module
         $this->loadLanguageFile('tl_member');
         $this->loadDataContainer('tl_member');
 
+
         $objMember = $this->Database->prepare('SELECT * FROM tl_member WHERE vdb_belongs_to_vdb=? AND id=? LIMIT 0,1')->execute(true, $this->Input->get('show'));
         $arrMember = $objMember->fetchAssoc();
-
-        // all fields
-        $this->Template->arrRecord = $arrMember;
+        foreach ($arrMember as $k => $v) {
+            $this->Template->$k = $v;
+        }
+        // create Member Object
+        $objMember = json_decode(json_encode($arrMember));
 
         // add sections
         $arrSections = array();
@@ -70,6 +73,102 @@ class ModuleOrganizationSearchDetailView extends Module
                 $this->Template->image = $this->generateImage($this->getImage($arrMember['vdb_bild'], 200, 300));
             }
         }
+
+        if ($arrMember['vdb_nachrichten_erlauben']) {
+            $this->Template->allowEmail = true;
+            $this->handlePersonalMessages($objMember);
+        }
+    }
+
+    /**
+     *
+     */
+    private function handlePersonalMessages($objMember)
+    {
+        $arrFieldName = array
+        (
+            'name' => 'name',
+            'label' => &$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['name'],
+            'inputType' => 'text',
+            'eval' => array('mandatory' => true, 'required' => true, 'rgxp' => 'alpha')
+        );
+        $arrFieldEmail = array
+        (
+            'name' => 'replyto',
+            'label' => &$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['replyto'],
+            'inputType' => 'text',
+            'eval' => array('mandatory' => true, 'required' => true, 'rgxp' => 'email')
+        );
+        $arrFieldMessage = array
+        (
+            'name' => 'message',
+            'label' => &$GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['message'],
+            'inputType' => 'textarea',
+            'eval' => array('mandatory' => true, 'required' => true, 'rows' => 4, 'cols' => 40, 'decodeEntities' => true)
+        );
+        $arrFieldCaptcha = array
+        (
+            'name' => 'captcha',
+            'label' => $GLOBALS['TL_LANG']['MSC']['captcha'],
+            'inputType' => 'captcha',
+            'eval' => array('mandatory' => true)
+        );
+        $objNameWidget = new FormTextField($this->prepareForWidget($arrFieldName, $arrFieldName['name'], ''));
+        $objEmailWidget = new FormTextField($this->prepareForWidget($arrFieldEmail, $arrFieldEmail['name'], ''));
+        $objMessageWidget = new FormTextArea($this->prepareForWidget($arrFieldMessage, $arrFieldMessage['name'], ''));
+        $objCaptchaWidget = new FormCaptcha($this->prepareForWidget($arrFieldCaptcha, $arrFieldCaptcha['name'], ''));
+
+        // Validate widget
+        if ($this->Input->post('FORM_SUBMIT') == 'tl_send_email') {
+            $objNameWidget->validate();
+            $objMessageWidget->validate();
+            $objEmailWidget->validate();
+            $objCaptchaWidget->validate();
+
+            if (!$objNameWidget->hasErrors() && !$objMessageWidget->hasErrors() && !$objEmailWidget->hasErrors() && !$objCaptchaWidget->hasErrors()) {
+                $this->sendPersonalMessage($objMember, $objNameWidget, $objMessageWidget, $objEmailWidget);
+            } else {
+                $this->Template->hasErrors = true;
+            }
+        }
+
+        if ($_SESSION['TL_EMAIL_SENT'] === true) {
+            unset($_SESSION['TL_EMAIL_SENT']);
+            $this->Template->confirm = $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['message_sent'];
+        } else {
+            //display the personal message form
+            $this->Template->sendEmail = $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['send_email'];
+            $this->Template->action = $this->getIndexFreeRequest();
+            $this->Template->nameWidget = $objNameWidget;
+            $this->Template->emailWidget = $objEmailWidget;
+            $this->Template->messageWidget = $objMessageWidget;
+            $this->Template->captchaWidget = $objCaptchaWidget;
+            $this->Template->submit = $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['send_message'];
+        }
+    }
+
+
+    /**
+     * @param $objMember
+     * @param $objNameWidget
+     * @param $objMessageWidget
+     * @param $objEmailWidget
+     */
+    private function sendPersonalMessage($objMember, $objNameWidget, $objMessageWidget, $objEmailWidget)
+    {
+        $objEmail = new Email();
+        $objEmail->from = $GLOBALS['TL_ADMIN_EMAIL'];
+        // https://github.com/contao/core/issues/4560
+        // $objEmail->from = $objEmailWidget->value;
+        $objEmail->fromName = $objNameWidget->value;
+        $objEmail->text = $objMessageWidget->value;
+        $objEmail->subject = sprintf($GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['subject'], $objEmailWidget->value, $this->Environment->host);
+        $objEmail->replyTo($objNameWidget->value . ' <' . $objEmailWidget->value . '>');
+
+        // Send e-mail
+        $objEmail->sendTo($objMember->email);
+        $_SESSION['TL_EMAIL_SENT'] = true;
+        $this->reload();
     }
 
 
