@@ -1,5 +1,6 @@
 <?php
-$GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/z_organization_search.js";
+$GLOBALS['TL_CSS'][] = "system/modules/vereinsdatenbank_suchmodul/assets/css/vereinsdatenbank_suchmodul.css";
+$GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/vereinsdatenbank_suchmodul.js";
 $GLOBALS['TL_JAVASCRIPT'][] = "https://maps.google.com/maps/api/js?sensor=false";
 $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false";
 ?>
@@ -102,24 +103,30 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <!-- message form -->
 <a href="javascript:false" class="hyperlink_txt" title="Nachricht senden" onclick="showOverlay();return false;">Nachricht senden</a>
 
-<div id="overlay" style="visibility:hidden"></div>
 
-<div id="center" style="visibility:hidden">
+<div id="formContainer" style="visibility:hidden">
 <h2><?php echo $this->sendEmail; ?></h2>
 <form action="<?php echo $this->action; ?>" method="post">
     <div class="formbody email_form">
         <input type="hidden" name="FORM_SUBMIT" value="tl_send_email" />
         <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
         <div class="formfields">
+            <div class="fieldcontainer">
             <?php echo $this->nameWidget->generateLabel(); ?><span class="mandatory"></span>
             <?php echo $this->nameWidget->generateWithError(); ?><br>
+            </div>
 
+            <div class="fieldcontainer">
             <?php echo $this->emailWidget->generateLabel(); ?><span class="mandatory"></span>
-            <?php echo $this->emailWidget->generateWithError(); ?><br>
+            <?php echo $this->emailWidget->generateWithError(); ?>
+            </div>
 
+            <div class="fieldcontainer">
             <?php echo $this->messageWidget->generateLabel(); ?><span class="mandatory"></span>
-            <?php echo $this->messageWidget->generateWithError(); ?><br>
-            <div class="captcha">
+            <?php echo $this->messageWidget->generateWithError(); ?>
+            </div>
+
+            <div class="fieldcontainer captcha">
             <?php echo $this->captchaWidget->generateLabel(); ?><span class="mandatory"></span>
             <?php echo $this->captchaWidget->generateWithError(); ?>
             <label for="ctrl_captcha"><?php echo $this->captchaWidget->generateQuestion(); ?><span class="mandatory"></span></label>
@@ -131,42 +138,44 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     </div>
 </form>
 </div>
+<script type="text/javascript">
+    window.addEvent('domready',function(){
+
+        showOverlay = function(){
+            if (document.id('formContainer') == 'undefined')
+            {
+                return;
+            }
+            var overl  = new Element('div', {id: 'overlay'});
+            overl.setStyles({
+                //visibility: 'hidden'
+            });
+            overl.inject(document.body);
+            overl.fade(0.6);
+            overl.addEvent('click',function(){
+                hideOverlay();
+            });
+
+            document.id('formContainer').fade(1);
+        }
+
+        hideOverlay = function()
+        {
+            document.id('overlay').fade(0);
+            document.id('formContainer').fade(0);
+            var destroyOverlay = (function()
+            {
+                document.id('overlay').destroy();
+            }).delay(1000);
+        }
+    });
+</script>
 <?php endif; ?>
 <?php endif; ?>
 
 
 </div>
 
-
-
-<script type="text/javascript">
-window.addEvent('domready',function(){
-
-    showOverlay = function(){
-        document.id('overlay').setStyles({
-            visibility: 'visible'
-        });
-        document.id('overlay').fade(0.7);
-
-        document.id('center').setStyles({
-            visibility: 'visible'
-        });
-        document.id('center').fade(1);
-    }
-
-    document.id('overlay').addEvent('click',function(){
-        hideOverlay();
-    });
-
-     hideOverlay = function()
-    {
-        document.id('overlay').fade(0);
-        document.id('center').fade(0);
-    }
-});
-
-
-</script>
 <?php if ($this->hasErrors): ?>
 <script type="text/javascript">
     window.addEvent('domready',function(){

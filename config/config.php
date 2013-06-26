@@ -32,5 +32,5 @@
 /**
  * Frontend modules
  */
-$GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche'] = 'ModuleOrganizationSearch';
-$GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche_detail_view'] = 'ModuleOrganizationSearchDetailView';
+$GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche'] = 'ModuleVereinsdatenbankSearch';
+$GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche_detail_view'] = 'ModuleVereinsdatenbankSearchDetailView';

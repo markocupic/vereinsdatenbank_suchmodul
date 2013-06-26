@@ -22,7 +22,7 @@
  * @filesource
  */
 
-class ModuleOrganizationSearchDetailView extends Module
+class ModuleVereinsdatenbankSearchDetailView extends Module
 {
     protected $strTemplate = 'mod_organization_search_detail_view';
 

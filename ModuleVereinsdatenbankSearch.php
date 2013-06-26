@@ -26,7 +26,7 @@
  * ft_min_word_len=3
  * take care about stopwords -> http://dev.mysql.com/doc/refman/5.1/de/fulltext-stopwords.html
  */
-class ModuleOrganizationSearch extends Module
+class ModuleVereinsdatenbankSearch extends Module
 {
     protected $strTemplate = 'mod_organization_search';
 
