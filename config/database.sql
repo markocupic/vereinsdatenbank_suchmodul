@@ -18,7 +18,7 @@ CREATE TABLE `tl_module` (
   `vdb_showMap` char(1) NOT NULL default '',
   `vdb_mapHeight` smallint(5) unsigned NOT NULL default '0',
   `vdb_mapWidth` smallint(5) unsigned NOT NULL default '0',
-
+  `vdb_customMarker` varchar(255) NOT NULL default '',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

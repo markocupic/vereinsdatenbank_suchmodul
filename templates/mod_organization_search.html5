@@ -114,19 +114,18 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
             <?php endif; ?>
             <table class="result_table">
                 <tr>
-                    <th><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_vereinsname'][0]; ?></th>
-                    <th><?php echo $GLOBALS['TL_LANG']['tl_member']['postal'][0]; ?></th>
-                    <th><?php echo $GLOBALS['TL_LANG']['tl_member']['city'][0]; ?></th>
-                    <th><?php echo $GLOBALS['TL_LANG']['tl_member']['country'][0]; ?></th>
+                    <?php foreach ($this->arrListableFields as $field): ?>
+                    <th><?php echo $GLOBALS['TL_LANG']['tl_member'][$field][0]; ?></th>
+                    <?php endforeach; ?>
                     <th>&nbsp;</th>
                 </tr>
+
 <?php foreach ($this->results as $arrResult): ?>
-                <?php //die(print_r($arrResult,true)); ?>
                 <tr>
-                    <td><?php echo $arrResult['vdb_vereinsname']; ?></td>
-                    <td><?php echo $arrResult['postal']; ?></td>
-                    <td><?php echo $arrResult['city']; ?></td>
-                    <td><?php echo $arrResult['country']; ?></td>
+                    <?php foreach ($arrResult as $k => $value): ?>
+                    <?php if ($k == 'id') continue; ?>
+                    <td><?php echo $value; ?></td>
+                    <?php endforeach; ?>
                     <td><a href="<?php echo sprintf($this->jumpTo, $arrResult['id']); ?>" title="mehr"><img src="system/modules/vereinsdatenbank_suchmodul/assets/images/information2.png" width="16"/></a></td>
                 </tr>
 <?php endforeach; ?>

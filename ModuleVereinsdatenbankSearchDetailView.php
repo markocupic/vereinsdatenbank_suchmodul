@@ -51,8 +51,16 @@ class ModuleVereinsdatenbankSearchDetailView extends Module
         foreach ($arrMember as $k => $v) {
             $this->Template->$k = $v;
         }
+
         // create Member Object
         $objMember = json_decode(json_encode($arrMember));
+
+        // generate javascript object
+        $customMarker = is_file(TL_ROOT . '/' . $this->vdb_customMarker) ? $this->Environment->url . '/' . $this->vdb_customMarker : '';
+        $gmObj = '<script>' . "\r\n";
+        $gmObj .= sprintf("objMember = {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'website': '%s', 'marker': '%s'};", str_replace("'", "`", $objMember->street), str_replace("'", "`", $objMember->city), $objMember->country, str_replace("'", "`", $objMember->vdb_vereinsname), $objMember->vdb_lat_coord, $objMember->vdb_lng_coord, str_replace("'", "`", $objMember->website), $customMarker) . "\r\n";
+        $gmObj .= '</script>' . "\r\n";
+        $this->Template->jsObjMember = $gmObj;
 
         // add sections
         $arrSections = array();
@@ -78,6 +86,7 @@ class ModuleVereinsdatenbankSearchDetailView extends Module
             $this->Template->allowEmail = true;
             $this->handlePersonalMessages($objMember);
         }
+        $this->Template->showMap = $this->vdb_showMap && strlen($objMember->vdb_lat_coord) && strlen($objMember->vdb_lng_coord) ? true : null;
     }
 
     /**

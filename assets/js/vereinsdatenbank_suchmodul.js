@@ -31,7 +31,7 @@ function is_object(obj) {
  * @param string url
  * @return object google.maps.Marker
  */
-function getMarkerFromPosition(map, pos, title, clickable, url) {
+function getMarkerFromPosition(map, pos, title, clickable, url, icon) {
     var objOptions = {
         map:map,
         position:pos
@@ -39,6 +39,9 @@ function getMarkerFromPosition(map, pos, title, clickable, url) {
 
     if (title != '') {
         objOptions.title = title;
+    }
+    if (icon != '') {
+        objOptions.icon = icon;
     }
     var marker = new google.maps.Marker(objOptions);
 
@@ -57,7 +60,7 @@ function getMarkerFromPosition(map, pos, title, clickable, url) {
  * @param title
  * @param url
  */
-function getMarkerFromAddress(map, address, title, clickable, url) {
+function getMarkerFromAddress(map, address, title, clickable, url, icon) {
     var geocoder = new google.maps.Geocoder();
 
     geocoder.geocode({ 'address':address}, function (results, status) {
@@ -117,6 +120,7 @@ window.addEvent('domready', function () {
 
 
 /* https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete?hl=de */
+/* https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple?hl=de */
 window.addEvent('domready', function () {
     if (document.id('ctrl_address')) {
         // write location to hidden form fields
@@ -199,13 +203,14 @@ window.addEvent('domready', function () {
             for (key in objCoord) {
                 var title = objCoord[key]['title'];
                 var url = objCoord[key]['url'] != '' ? objCoord[key]['url'] : null;
+                var customIcon = objCoord[key]['marker'];
                 if (objCoord[key]['lat'] == '' || objCoord[key]['lat'] == '') {
                     var address = objCoord[key]['street'] + ', ' + objCoord[key]['city'] + ', ' + objCoord[key]['country'];
-                    var marker = getMarkerFromAddress(map, address, title, true, url);
+                    var marker = getMarkerFromAddress(map, address, title, true, url, customIcon);
 
                 } else {
                     var pos = new google.maps.LatLng(objCoord[key]['lat'], objCoord[key]['lng']);
-                    var marker = getMarkerFromPosition(map, pos, title, true, url);
+                    var marker = getMarkerFromPosition(map, pos, title, true, url, customIcon);
                 }
 
             }

@@ -32,7 +32,13 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_module']['vdb_viewable_fields'] = array('Felder', 'Diese Felder werden in der Detailansicht veröffentlicht.');
+$GLOBALS['TL_LANG']['tl_module']['vdb_viewable_fields'] = array('Aufgelistete Felder in der Listenansicht', 'Diese Felder werden in der Listenansicht veröffentlicht.');
 $GLOBALS['TL_LANG']['tl_module']['vdb_showMap'] = array('Karte anzeigen', '');
 $GLOBALS['TL_LANG']['tl_module']['vdb_mapWidth'] = array('Kartenbreite', 'Geben Sie die Breite der Karte in Pixeln an.');
 $GLOBALS['TL_LANG']['tl_module']['vdb_mapHeight'] = array('Kartenhöhe', 'Geben Sie die Höhe der Karte in Pixeln an.');
+$GLOBALS['TL_LANG']['tl_module']['vdb_customMarker'] = array('Benutzerspezifisches Marker Icon', 'Wählen Sie ein Marker Icon aus der Dateiverwaltung aus.');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_module']['map_legend'] = 'Karteneinstellungen';

@@ -85,6 +85,28 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 
 
 </table>
+<?php if($this->showMap): ?>
+<div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
+<?php echo $this->jsObjMember; ?>
+<script>
+    window.addEvent('domready', function () {
+        lat = objMember.lat;
+        lng = objMember.lng;
+        if (document.id('map-canvas')) {
+            document.id('map-canvas').setStyle('display', 'block');
+            var mapOptions = {
+                zoom:10,
+                center:new google.maps.LatLng(lat, lng),
+                mapTypeId:google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+            var pos = new google.maps.LatLng(lat, lng);
+            var clickable = objMember.website == '' ? false : true;
+            getMarkerFromPosition(map,pos, 'Ihr Standort', clickable, objMember.website, objMember.marker);
+        }
+    });
+</script>
+<?php endif; ?>
 <?php endif; ?>
 
 

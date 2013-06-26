@@ -40,10 +40,10 @@ class ModuleVereinsdatenbankSearch extends Module
         }
 
         // add FULLTEXT KEY to tl_member
-        try{
-        $this->Database->query('ALTER TABLE tl_member DROP INDEX `vdb_vereinsdatenbank_suche`');
-        }catch (Exception $e)
-        {}
+        try {
+            $this->Database->query('ALTER TABLE tl_member DROP INDEX `vdb_vereinsdatenbank_suche`');
+        } catch (Exception $e) {
+        }
         $this->arrSearchableFields = array(vdb_vereinsname, firstname, lastname, city, vdb_taetigkeitsmerkmale, vdb_taetigkeitsmerkmale_zweitsprache, vdb_egagiert_fuer, vdb_egagiert_fuer_zweitsprache, vdb_besondere_aktion, vdb_besondere_aktion_zweitsprache);
         $objKey = $this->Database->prepare('SHOW INDEX FROM tl_member WHERE Key_name=?')->execute('vdb_vereinsdatenbank_suche');
         if (!$objKey->numRows) {
@@ -209,14 +209,19 @@ class ModuleVereinsdatenbankSearch extends Module
                 $objPagination = new Pagination($items, $limit);
                 $this->Template->pagination = $objPagination->generate("\n ");
 
-                // create the result array
+                // create the js-object and the result array
                 $i = 0;
+                $arrListableFields = strlen($this->vdb_viewable_fields) ? unserialize($this->vdb_viewable_fields) : array();
                 $arrResults = array();
+                $customMarker = is_file(TL_ROOT . '/' . $this->vdb_customMarker) ? $this->Environment->url . '/' . $this->vdb_customMarker : '';
                 $memberCoord = '<script>' . "\r\n";
                 $memberCoord .= 'objCoord = {' . "\r\n";
                 while ($objMembers->next()) {
-                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s'},", $i, str_replace("'", "`", $objMembers->street), str_replace("'", "`", $objMembers->city), $objMembers->country, str_replace("'", "`", $objMembers->vdb_vereinsname), $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id)) . "\r\n";
-                    $arrResults[$i] = $objMembers->row();
+                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s', 'marker': '%s'},", $i, str_replace("'", "`", $objMembers->street), str_replace("'", "`", $objMembers->city), $objMembers->country, str_replace("'", "`", $objMembers->vdb_vereinsname), $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id), $customMarker) . "\r\n";
+                    $arrResults[$i]['id'] = $objMembers->id;
+                    foreach ($arrListableFields as $field) {
+                        $arrResults[$i][$field] = $objMembers->$field;
+                    }
                     $i++;
                 }
                 $memberCoord .= '};' . "\r\n";
@@ -283,6 +288,7 @@ class ModuleVereinsdatenbankSearch extends Module
 
         // set template vars
         $this->Template->results = is_array($arrResults) ? $arrResults : NULL;
+        $this->Template->arrListableFields = $arrListableFields;
         $this->Template->publishedFields = unserialize($this->ml_fields);
         $this->Template->items = $items > 0 ? $items : NULL;
         $this->Template->status = is_array($arrResults) ? 'show_results' : 'show_form';
@@ -308,8 +314,7 @@ class ModuleVereinsdatenbankSearch extends Module
      * generate the jumpTo link to the detailview
      * @return string
      */
-    private
-    function getJumpToHref()
+    private function getJumpToHref()
     {
         if ($this->jumpTo < 1) {
             $href = ampersand($this->Environment->request, true);

@@ -32,10 +32,10 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{config_legend},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche_detail_view'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{config_legend},vdb_viewable_fields;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{config_legend},vdb_viewable_fields,jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['vereinsuche_detail_view'] = '{title_legend},name,headline,type;{map_legend},vdb_showMap;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'vdb_showMap';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['vdb_showMap'] = 'vdb_mapWidth,vdb_mapHeight';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['vdb_showMap'] = 'vdb_mapWidth,vdb_mapHeight,vdb_customMarker';
 
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['vdb_viewable_fields'] = array
@@ -69,6 +69,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['vdb_mapHeight'] = array
     'exclude' => true,
     'inputType' => 'text',
     'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit')
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['vdb_customMarker'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['vdb_customMarker'],
+    'exclude'                 => true,
+    'inputType'               => 'fileTree',
+    'eval'                    => array('fieldType'=>'radio', 'files'=>true, 'mandatory'=>false, 'extensions' => 'jpg,jpeg,png,gif', 'tl_class'=>'clr')
 );
 
 /**
