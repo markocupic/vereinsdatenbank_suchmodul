@@ -9,13 +9,17 @@
     position: fixed;
     background-color: #666;
     z-index: 9998;
-    cursor: pointer;
-    opacity: 0;
-}
 
-#formContainer  p.error {
-    color: #0099cc;
-    margin-bottom: 0px;
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    /* IE 5-7 */
+    filter: alpha(opacity=0);
+    /* Netscape */
+    -moz-opacity: 0;
+    /* Safari 1.x */
+    -khtml-opacity: 0;
+    /* Good browsers */
+    opacity: 0;
 }
 
 #formContainer {
@@ -23,25 +27,28 @@
     background-color: #666;
     width: 500px;
     height: auto;
-    top: 50px;
     position: fixed;
     overflow: hidden;
-    -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
     border-radius: 10px;
-    behavior: url('plugins/css3pie/PIE.htc');
-    opacity: 0;
     z-index: 9999;
-    left: 20%;
-    -khtml-border-radius: 10px;
-    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.50);
-    -khtml-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.50);
-    -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.50);
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.50);
-    /* For IE 8 */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=180, Color='#000000')";
-    /* For IE 5.5 - 7 */
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength = 5, Direction = 180, Color = '#000000');
+
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    /* IE 5-7 */
+    filter: alpha(opacity=0);
+    /* Netscape */
+    -moz-opacity: 0;
+    /* Safari 1.x */
+    -khtml-opacity: 0;
+    /* Good browsers */
+    opacity: 0;
+}
+
+#formContainer  p.error {
+    color: #0099cc;
+    margin-bottom: 0px;
 }
 
 #formContainer h2, #formContainer label {

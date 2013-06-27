@@ -13,69 +13,95 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 
 <?php if (!$this->confirm): ?>
 <!-- result table -->
-<table>
+<table cellspacing="0" class="single_record" summary="">
+    <?php if ($this->vdb_vereinsname): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_vereinsname'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_vereinsname; ?></td>
     </tr>
+    <?php endif; ?>
+
+    <?php if ($this->strSections): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections']; ?></td>
         <td class="col_1"><?php echo $this->strSections; ?></td>
     </tr>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_wer_ist_engagiert): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_wer_ist_engagiert'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_wer_ist_engagiert; ?></td>
     </tr>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_taetigkeitsmerkmale): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_taetigkeitsmerkmale'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_taetigkeitsmerkmale; ?></td>
     </tr>
-    <?php if ($this->vdb_taetigkeitsmerkmale_zweitsprache != ""): ?>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_taetigkeitsmerkmale_zweitsprache): ?>
     <tr class="zweitsprache">
         <td class="col_0"></td>
         <td class="col_1"><?php echo $this->vdb_taetigkeitsmerkmale_zweitsprache; ?></td>
     </tr>
     <?php endif; ?>
+
+    <?php if ($this->vdb_egagiert_fuer): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_egagiert_fuer'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_egagiert_fuer; ?></td>
     </tr>
-    <?php if ($this->vdb_egagiert_fuer_zweitsprache != ""): ?>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_egagiert_fuer_zweitsprache): ?>
     <tr class="zweitsprache">
         <td class="col_0"></td>
         <td class="col_1"><?php echo $this->vdb_egagiert_fuer_zweitsprache; ?></td>
     </tr>
     <?php endif; ?>
+
+    <?php if ($this->vdb_aktiv_engagierte_mitglieder): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_aktiv_engagierte_mitglieder'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_aktiv_engagierte_mitglieder; ?></td>
     </tr>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_unterstuetzer): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_unterstuetzer'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_unterstuetzer; ?></td>
     </tr>
+    <?php endif; ?>
+
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['contact person']; ?></td>
         <td class="col_1">
-            <?php echo $this->firstname . ' ' . $this->lastname . '<br>'; ?>
-            <?php echo $this->street . '<br>'; ?>
-            <?php echo strtoupper($this->country) . '-' . $this->postal . ' ' .
-            $this->city . '<br>'; ?>
-            <?php if ($this->phone): ?>Tel: <?php echo $this->phone . '<br>';
-            ?><?php endif; ?>
-            <?php if ($this->fax): ?>Fax: <?php echo $this->fax . '<br>'; ?><?php endif; ?>
+            <?php if ($this->firstname): ?><?php echo $this->firstname;?><?php endif; ?> <?php if ($this->lastname): ?><?php echo $this->lastname; ?><?php endif; ?><br>
+            <?php if ($this->street): ?><?php echo $this->street; ?><br><?php endif; ?>
+            <?php echo strtoupper($this->country); ?>-<?php echo $this->postal; ?> <?php echo $this->city; ?><br>
+            <?php if ($this->phone): ?>Tel: <?php echo $this->phone; ?><br><?php endif; ?>
+            <?php if ($this->fax): ?>Fax: <?php echo $this->fax; ?><br><?php endif; ?>
         </td>
     </tr>
+
+    <?php if ($this->vdb_besondere_aktion): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['vdb_besondere_aktion'][0]; ?></td>
         <td class="col_1"><?php echo $this->vdb_besondere_aktion; ?></td>
     </tr>
-    <?php if ($this->vdb_besondere_aktion_zweitsprache != ""): ?>
+    <?php endif; ?>
+
+    <?php if ($this->vdb_besondere_aktion_zweitsprache): ?>
     <tr class="zweitsprache">
         <td class="col_0"></td>
         <td class="col_1"><?php echo $this->vdb_besondere_aktion_zweitsprache; ?></td>
     </tr>
     <?php endif; ?>
+
     <?php if ($this->image): ?>
     <tr>
         <td class="col_0"></td>
@@ -123,7 +149,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <?php else: ?>
 
 <!-- message form -->
-<a href="javascript:false" class="hyperlink_txt" title="Nachricht senden" onclick="showOverlay();return false;">Nachricht senden</a>
+<a href="javascript:false" class="hyperlink_txt" title="Nachricht senden" onclick="showForm();return false;">Nachricht senden</a>
 
 
 <div id="formContainer" style="visibility:hidden">
@@ -163,45 +189,63 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <script type="text/javascript">
     window.addEvent('domready',function(){
 
-        showOverlay = function(){
+        showForm = function(){
             if (document.id('formContainer') == 'undefined')
             {
                 return;
             }
+            // fade in the overlay
             var overl  = new Element('div', {id: 'overlay'});
-            overl.setStyles({
-                //visibility: 'hidden'
-            });
             overl.inject(document.body);
             overl.fade(0.6);
             overl.addEvent('click',function(){
-                hideOverlay();
+                hideForm();
             });
-
-            document.id('formContainer').fade(1);
+            window.addEvent('keydown', function(event){
+                if(event.key == 'esc')
+                {
+                    hideForm();
+                }
+            });
+            // show Form
+            var formCont =  document.id('formContainer');
+            var x = (window.innerWidth / 2) - (formCont.offsetWidth / 2);
+            formCont.style.top = 20  + 'px';
+            formCont.style.left = x + 'px';
+            var fadeForm = (function(){
+                formCont.fade(1);
+            }).delay(500);
         }
 
-        hideOverlay = function()
+        hideForm = function()
         {
-            document.id('overlay').fade(0);
-            document.id('formContainer').fade(0);
-            var destroyOverlay = (function()
+            if (document.id('overlay'))
             {
-                document.id('overlay').destroy();
-            }).delay(1000);
+                document.id('overlay').fade(0);
+                var destroyOverlay = (function()
+                {
+                    document.id('overlay').destroy();
+                }).delay(1000);
+            }
+
+            if (document.id('formContainer'))
+            {
+                document.id('formContainer').fade(0);
+            }
+
         }
     });
 </script>
 <?php endif; ?>
 <?php endif; ?>
-
-
 </div>
+
+
 
 <?php if ($this->hasErrors): ?>
 <script type="text/javascript">
     window.addEvent('domready',function(){
-       showOverlay();
+       showForm();
     });
 </script>
 <?php endif; ?>
