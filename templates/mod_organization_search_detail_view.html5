@@ -185,6 +185,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
         </div>
     </div>
 </form>
+    <img src="system/modules/vereinsdatenbank_suchmodul/assets/images/close.png" class="close_icon" height="20" onclick="hideForm()">
 </div>
 <script type="text/javascript">
     window.addEvent('domready',function(){

@@ -120,7 +120,7 @@ class ModuleVereinsdatenbankSearchDetailView extends Module
             'name' => 'captcha',
             'label' => $GLOBALS['TL_LANG']['MSC']['captcha'],
             'inputType' => 'captcha',
-            'eval' => array('mandatory' => true)
+            'eval' => array('mandatory' => true, 'class'=>'text')
         );
         $objNameWidget = new FormTextField($this->prepareForWidget($arrFieldName, $arrFieldName['name'], ''));
         $objEmailWidget = new FormTextField($this->prepareForWidget($arrFieldEmail, $arrFieldEmail['name'], ''));
