@@ -1,5 +1,6 @@
 <?php
 $GLOBALS['TL_CSS'][] = "system/modules/vereinsdatenbank_suchmodul/assets/css/vereinsdatenbank_suchmodul.css";
+$GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/mmBox.js";
 $GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/vereinsdatenbank_suchmodul.js";
 $GLOBALS['TL_JAVASCRIPT'][] = "https://maps.google.com/maps/api/js?sensor=false";
 $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false";
@@ -12,6 +13,14 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <?php endif; ?>
 
 <?php if (!$this->confirm): ?>
+
+<?php if ($this->allowEmail): ?>
+<a href="javascript:void(0)" class="hyperlink_txt" title="Nachricht senden" onclick="mmbOpen('messageForm');return false;">Nachricht senden</a>
+<?php endif; ?>
+<?php if ($this->showMap): ?>
+<a href="javascript:void(0)" class="hyperlink_txt" title="Karte anzeigen" onclick="showMap();return false;">Karte anzeigen</a>
+<?php endif; ?>
+
 <!-- result table -->
 <table cellspacing="0" class="single_record" summary="">
     <?php if ($this->vdb_vereinsname): ?>
@@ -115,22 +124,8 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
 <?php echo $this->jsObjMember; ?>
 <script>
-    window.addEvent('domready', function () {
-        lat = objMember.lat;
-        lng = objMember.lng;
-        if (document.id('map-canvas')) {
-            document.id('map-canvas').setStyle('display', 'block');
-            var mapOptions = {
-                zoom:10,
-                center:new google.maps.LatLng(lat, lng),
-                mapTypeId:google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-            var pos = new google.maps.LatLng(lat, lng);
-            var clickable = objMember.website == '' ? false : true;
-            getMarkerFromPosition(map,pos, 'Ihr Standort', clickable, objMember.website, objMember.marker);
-        }
-    });
+
+
 </script>
 <?php endif; ?>
 <?php endif; ?>
@@ -142,17 +137,12 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
 <?php if ($this->allowEmail): ?>
 
 <?php if ($this->confirm): ?>
-
 <p class="confirm"><?php echo $this->confirm; ?></p>
 <a href="javascript:history.go(0)" onclick="history.go(0)">zurück</a>
 
 <?php else: ?>
-
 <!-- message form -->
-<a href="javascript:false" class="hyperlink_txt" title="Nachricht senden" onclick="showForm();return false;">Nachricht senden</a>
-
-
-<div id="formContainer" style="visibility:hidden">
+<div id="messageForm" style="display:none; width:400px">
 <h2><?php echo $this->sendEmail; ?></h2>
 <form action="<?php echo $this->action; ?>" method="post">
     <div class="formbody email_form">
@@ -185,69 +175,42 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
         </div>
     </div>
 </form>
-    <img src="system/modules/vereinsdatenbank_suchmodul/assets/images/close.png" class="close_icon" height="20" onclick="hideForm()">
 </div>
-<script type="text/javascript">
-    window.addEvent('domready',function(){
+<?php endif; ?>
+<?php endif; ?>
+</div>
 
-        showForm = function(){
-            if (document.id('formContainer') == 'undefined')
+
+<script>
+window.addEvent('domready',function(){
+    showMap = function () {
+        lat = objMember.lat;
+        lng = objMember.lng;
+        if (document.id('map-canvas')) {
+            mmbOpen('map-canvas');
+            var mapOptions = {
+                zoom:10,
+                center:new google.maps.LatLng(lat, lng),
+                mapTypeId:google.maps.MapTypeId.ROADMAP
+            };
+            fadeMap = (function ()
             {
-                return;
-            }
-            // fade in the overlay
-            var overl  = new Element('div', {id: 'overlay'});
-            overl.inject(document.body);
-            overl.fade(0.6);
-            overl.addEvent('click',function(){
-                hideForm();
-            });
-            window.addEvent('keydown', function(event){
-                if(event.key == 'esc')
-                {
-                    hideForm();
-                }
-            });
-            // show Form
-            var formCont =  document.id('formContainer');
-            var x = (window.innerWidth / 2) - (formCont.offsetWidth / 2);
-            formCont.style.top = 20  + 'px';
-            formCont.style.left = x + 'px';
-            var fadeForm = (function(){
-                formCont.fade(1);
-            }).delay(500);
+                map = new google.maps.Map(document.getElementById('mmbContent'), mapOptions);
+                var pos = new google.maps.LatLng(lat, lng);
+                var clickable = objMember.website == '' ? false : true;
+                getMarkerFromPosition(map, pos, objMember.title, clickable, objMember.website, objMember.marker);
+            }).delay(1500);
         }
-
-        hideForm = function()
-        {
-            if (document.id('overlay'))
-            {
-                document.id('overlay').fade(0);
-                var destroyOverlay = (function()
-                {
-                    document.id('overlay').destroy();
-                }).delay(1000);
-            }
-
-            if (document.id('formContainer'))
-            {
-                document.id('formContainer').fade(0);
-            }
-
-        }
-    });
+    }
+});
 </script>
-<?php endif; ?>
-<?php endif; ?>
-</div>
-
-
 
 <?php if ($this->hasErrors): ?>
 <script type="text/javascript">
     window.addEvent('domready',function(){
-       showForm();
+        mmbOpen('messageForm');
     });
 </script>
+
 <?php endif; ?>
 <!-- indexer::continue -->

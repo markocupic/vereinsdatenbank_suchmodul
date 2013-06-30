@@ -1,7 +1,8 @@
 /**
- * message Box /detail view)
+ * mmb myMediaBox
  */
-#overlay {
+
+#mmbOverlay {
     width: 100%;
     height: 100%;
     top: 0;
@@ -10,89 +11,74 @@
     background-color: #666;
     z-index: 9998;
 
-    /* IE 8 */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-    /* IE 5-7 */
-    filter: alpha(opacity = 0);
-    /* Netscape */
-    -moz-opacity: 0;
-    /* Safari 1.x */
-    -khtml-opacity: 0;
-    /* New browsers */
-    opacity: 0;
 }
 
-#formContainer * {
-    font-family: "open-sans", sans-serif;
+#mmbCenter {
+    padding: 15px;
+    background-color: #2E3639;
+    height: auto;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+
+
+/**
+ * styling
+ */
+#mmbContent *, #mmbCloseLink {
     color: #fff;
 }
 
-#formContainer {
-    padding: 15px;
-    background-color: #2E3639;
-    width: 500px;
-    height: auto;
-    position: fixed;
-    overflow: hidden;
-    z-index: 9999;
-
-    /* IE 8 */
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-    /* IE 5-7 */
-    filter: alpha(opacity = 0);
-    /* Netscape */
-    -moz-opacity: 0;
-    /* Safari 1.x */
-    -khtml-opacity: 0;
-    /* New browsers */
-    opacity: 0;
+#mmbCloseLink:hover {
+    text-decoration: none;
 }
 
-#formContainer  p.error {
+#mmbContent  p.error {
     margin-bottom: 0px;
-    color:#0492D2;
+    color: #0492D2;
 }
 
-#formContainer .formbody {
-    border: 1px solid #ccc !important;
+#mmbContent .formbody {
+    border: 0;
 }
 
-#formContainer label {
+#mmbContent label {
     display: block;
     font-size: 14px;
     margin-bottom: 3px;
 
 }
 
-#formContainer .fieldcontainer {
+#mmbContent .fieldcontainer {
     margin-bottom: 20px;
 
 }
 
-#formContainer .captcha label {
+#mmbContent .captcha label {
     display: inline;
 }
 
-#formContainer input.text, #formContainer .textarea, #formContainer .password {
-    width: 300px;
+#mmbContent input.text, #mmbContent .textarea, #mmbContent .password {
     /*experimental*/
-    background: #62686b;
+    width: 350px;
+    background-color: #62686b;
     color: #fff;
     font-size: 14px;
     border: none;
     box-sizing: border-box;
-    border-radius: 20px;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    outline: none;
-    padding: 0px 15px;
-    height: 30px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    outline: none;
+    padding: 0px 15px;
+    height: 30px;
 }
 
-#formContainer .submit {
+#mmbContent .submit {
     border: none;
     color: #fff;
     text-transform: uppercase;
@@ -106,36 +92,25 @@
     cursor: pointer;
 }
 
-#formContainer input[type=submit]:hover {
+#mmbContent input[type=submit]:hover {
     background: #E51111;
 }
 
-#formContainer .textarea {
+#mmbContent .textarea {
     resize: none;
     height: 200px;
     padding: 10px;
 }
 
-#formContainer .captcha label {
+#mmbContent .captcha label {
     display: block;
     background-color: transparent;
     border-radius: 0;
 }
 
-#formContainer .close_icon {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-}
-
-
-
-
-
-
 /**
- * search form
- */
+* search form
+*/
 .mod_vereinsuche input.checkbox {
     clear: both;
     display: block !important;

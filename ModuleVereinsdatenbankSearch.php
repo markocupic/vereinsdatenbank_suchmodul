@@ -217,7 +217,13 @@ class ModuleVereinsdatenbankSearch extends Module
                 $memberCoord = '<script>' . "\r\n";
                 $memberCoord .= 'objCoord = {' . "\r\n";
                 while ($objMembers->next()) {
-                    $memberCoord .= sprintf("'%s': {'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s', 'marker': '%s'},", $i, str_replace("'", "`", $objMembers->street), str_replace("'", "`", $objMembers->city), $objMembers->country, str_replace("'", "`", $objMembers->vdb_vereinsname), $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id), $customMarker) . "\r\n";
+                    $arrCat = array();
+                    foreach ($GLOBALS['TL_DCA']['tl_member']['fields']['categories'] as $field) {
+                        if ($objMembers->$field > 0) {
+                            $arrCat[] = $GLOBALS['TL_LANG']['tl_member'][$field][0];
+                        }
+                    }
+                    $memberCoord .= sprintf("'%s': {'id': '%s', 'street': '%s', 'city': '%s', 'country': '%s', 'title': '%s', 'lat': '%s', 'lng': '%s', 'url': '%s', 'marker': '%s', 'categories': '%s'},", $i, $objMembers->id, str_replace("'", "`", $objMembers->street), str_replace("'", "`", $objMembers->city), $objMembers->country, str_replace("'", "`", $objMembers->vdb_vereinsname), $objMembers->vdb_lat_coord, $objMembers->vdb_lng_coord, sprintf($this->getJumpToHref(), $objMembers->id), $customMarker, str_replace("'", "`", implode('@@@', $arrCat))) . "\r\n";
                     $arrResults[$i]['id'] = $objMembers->id;
                     foreach ($arrListableFields as $field) {
                         $arrResults[$i][$field] = $objMembers->$field;

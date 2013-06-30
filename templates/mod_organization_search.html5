@@ -102,7 +102,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     <div class="result_container">
         <div class="search_link"><a href="<?php echo $this->linkToForm; ?>">>>neue Suche</a></div>
         <!-- show mysql query for debug  use -->
-        <div><p style="font-size:9px;color:#228b22;"><?php echo $this->mysqlQuery; ?></p></div>
+        <!--<div><p style="font-size:9px;color:#228b22;"><?php echo $this->mysqlQuery; ?></p></div>-->
 
         <!-- show pagination menu -->
         <?php echo $this->pagination; ?>

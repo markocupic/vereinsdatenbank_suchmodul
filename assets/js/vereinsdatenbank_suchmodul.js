@@ -105,19 +105,6 @@ var clearForm = function () {
     return false;
 }
 
-/**
- * slide in the result container
- */
-window.addEvent('domready', function () {
-    if (document.id('result_container')) {
-        mySlide = new Fx.Slide('result_container');
-        document.id('result_container').setStyle('visiblity', 'hidden');
-        mySlide.hide();
-        document.id('result_container').setStyle('visiblity', 'visible');
-        mySlide.slideIn();
-    }
-});
-
 
 /* https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete?hl=de */
 /* https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple?hl=de */
@@ -182,8 +169,8 @@ window.addEvent('domready', function () {
 });
 
 
-/** result page **************************/
 /**
+ * result page
  * show map with the location of each result
  * https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete?hl=de
  */
@@ -191,6 +178,7 @@ window.addEvent('domready', function () {
     if (document.id('map-canvas') && typeof objCoord != 'undefined') {
         // add the map to the bottom
         var map;
+
         initializeResultListMap = function (lat, lng) {
             document.id('map-canvas').setStyle('display', 'block');
             var mapOptions = {
@@ -198,22 +186,49 @@ window.addEvent('domready', function () {
                 center:new google.maps.LatLng(lat, lng),
                 mapTypeId:google.maps.MapTypeId.ROADMAP
             };
+            var markers = new Array();
             map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
             for (key in objCoord) {
+                var marker = null;
                 var title = objCoord[key]['title'];
                 var url = objCoord[key]['url'] != '' ? objCoord[key]['url'] : null;
                 var customIcon = objCoord[key]['marker'];
+
+                var infowindow = new google.maps.InfoWindow({
+                    content:contentString
+                });
+
                 if (objCoord[key]['lat'] == '' || objCoord[key]['lat'] == '') {
                     var address = objCoord[key]['street'] + ', ' + objCoord[key]['city'] + ', ' + objCoord[key]['country'];
-                    var marker = getMarkerFromAddress(map, address, title, true, url, customIcon);
+                    var marker = getMarkerFromAddress(map, address, title, true, '', customIcon);
 
-                } else {
-                    var pos = new google.maps.LatLng(objCoord[key]['lat'], objCoord[key]['lng']);
-                    var marker = getMarkerFromPosition(map, pos, title, true, url, customIcon);
                 }
-
+                else {
+                    var pos = new google.maps.LatLng(objCoord[key]['lat'], objCoord[key]['lng']);
+                    var marker = getMarkerFromPosition(map, pos, title, true, '', customIcon);
+                }
+                if (marker) {
+                    var contentString = '<div id="content" style="font-size:9px;"><span style="font-weight:bold;">' + objCoord[key]['title'] + '</span><br>' + objCoord[key]['categories'].replace(/@@@/g, '<br>') + '</div>';
+                    marker.html = contentString;
+                    markers.push(marker);
+                }
             }
+            // solution for multiple infowindows
+            // http://you.arenot.me/2010/06/29/google-maps-api-v3-0-multiple-markers-multiple-infowindows/
+            infowindow = new google.maps.InfoWindow({
+                content: "write some temporary content..."
+            });
+
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i];
+                google.maps.event.addListener(marker, 'click', function () {
+                    // where I have added .html to the marker object.
+                    infowindow.setContent(this.html);
+                    infowindow.open(map, this);
+                });
+            }
+
+
             if (getParam('lat') && getParam('lng') && getParam('radius')) {
                 var circle = new google.maps.Circle({
                     map:map,
@@ -224,11 +239,13 @@ window.addEvent('domready', function () {
                 });
             }
         };
+
         // initialize map
         if (document.id('map-canvas')) {
             initializeResultListMap(objCoord[0]['lat'], objCoord[0]['lng']);
         }
     }
+
 });
 
 
