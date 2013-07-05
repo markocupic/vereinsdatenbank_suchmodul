@@ -2,7 +2,7 @@
 
 /**
  * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
+ * Copyright (C) 2005-2013 Leo Feyer
  *
  * Formerly known as TYPOlight Open Source CMS.
  *
@@ -21,16 +21,16 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Marko Cupic 2013
- * @author     Marko Cupic <m.cupic@gmx.ch>
- * @package    OrganizationSearch
- * @license    LGPL
+ * @copyright  Leo Feyer 2005-2013
+ * @author     Leo Feyer <https://contao.org>
+ * @package    VereinsdatenbankSuchmodul
  * @filesource
  */
-
 
 /**
  * Frontend modules
  */
 $GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche'] = 'ModuleVereinsdatenbankSearch';
 $GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche_detail_view'] = 'ModuleVereinsdatenbankSearchDetailView';
+
+?>

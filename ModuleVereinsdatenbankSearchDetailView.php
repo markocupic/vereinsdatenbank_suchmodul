@@ -1,25 +1,40 @@
 <?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+
 /**
  * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
+ * Copyright (C) 2005-2013 Leo Feyer
+ *
  * Formerly known as TYPOlight Open Source CMS.
+ *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program. If not, please visit the Free
  * Software Foundation website at <http://www.gnu.org/licenses/>.
+ *
  * PHP version 5
- * @copyright  Marko Cupic 2013
- * @author     Marko Cupic <m.cupic@gmx.ch>
- * @package    OrganizationSearch
- * @license    LGPL
+ * @copyright  Leo Feyer 2005-2013
+ * @author     Leo Feyer <https://contao.org>
+ * @package    VereinsdatenbankSuchmodul
  * @filesource
+ */
+
+
+/**
+ * Class ModuleVereinsdatenbankSearchDetailView
+ *
+ * Provide methods regarding club properties.
+ * @copyright  Marko Cupic 2013
+ * @author     m.cupic@gmx.ch
+ * @package    VereinsdatenbankSuchmodul
  */
 
 class ModuleVereinsdatenbankSearchDetailView extends Module
@@ -46,7 +61,7 @@ class ModuleVereinsdatenbankSearchDetailView extends Module
         $this->loadDataContainer('tl_member');
 
 
-        $objMember = $this->Database->prepare('SELECT * FROM tl_member WHERE vdb_belongs_to_vdb=? AND id=? LIMIT 0,1')->execute(true, $this->Input->get('show'));
+        $objMember = $this->Database->prepare('SELECT * FROM tl_member WHERE vdb_belongs_to_vdb=? AND disable=? AND id=? LIMIT 0,1')->execute(true, '', $this->Input->get('show'));
         $arrMember = $objMember->fetchAssoc();
         foreach ($arrMember as $k => $v) {
             $this->Template->$k = $v;
@@ -182,3 +197,4 @@ class ModuleVereinsdatenbankSearchDetailView extends Module
 
 
 }
+?>
