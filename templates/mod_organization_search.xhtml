@@ -1,0 +1,144 @@
+<?php
+$GLOBALS['TL_CSS'][] = "system/modules/vereinsdatenbank_suchmodul/assets/css/vereinsdatenbank_suchmodul.css";
+$GLOBALS['TL_JAVASCRIPT'][] = "system/modules/vereinsdatenbank_suchmodul/assets/js/vereinsdatenbank_suchmodul.js";
+$GLOBALS['TL_JAVASCRIPT'][] = "https://maps.google.com/maps/api/js?sensor=false";
+$GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false";
+?>
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->headline): ?>
+
+<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+<?php endif; ?>
+
+<?php if($this->status == 'show_form'): ?>
+    <form action="<?php echo $this->action; ?>" id="tl_search_organization" method="get">
+
+    <div class="formbody">
+        <input type="hidden" name="submit" value="1" />
+
+        <?php if (strlen($this->message)): ?>
+        <div class="message_box <?php echo $this->messageType; ?>"><?php echo $this->message; ?></div>
+        <?php endif; ?>
+
+        <fieldset class="tags">
+            <legend><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['tag_search']; ?>:</legend>
+            <?php echo $this->fields['tags']; ?>
+        </fieldset>
+
+        <fieldset class="postal">
+            <legend><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['postal_scope']; ?>:</legend>
+            <?php echo $this->fields['postal']; ?>
+        </fieldset>
+
+        <div class="separator clearing"></div>
+
+        <fieldset class="categories">
+            <legend><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['category_filter']; ?>:</legend>
+            <div class="checkbox_container">
+                <?php echo $this->fields['cat']; ?>
+
+                <?php echo $this->fields['search']; ?>
+            </div>
+        </fieldset>
+        <fieldset class="countries">
+            <legend><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['country_select']; ?>:</legend>
+            <div class="checkbox_container">
+                <?php echo $this->fields['country']; ?>
+            </div>
+        </fieldset>
+
+        <div class="separator clearing"></div>
+
+        <fieldset class="radius_filter">
+            <legend><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['radius_search']; ?>:</legend>
+            <div id="ctrl_address_box">
+                <input type="hidden" id="ctrl_lat" name="lat" value="<?php echo $this->lat; ?>" />
+                <input type="hidden" id="ctrl_lng" name="lng" value="<?php echo $this->lng; ?>" />
+                <?php echo $this->fields['address']; ?>
+            </div>
+            <div id="ctrl_radius_box">
+                <?php echo $this->fields['radius']; ?>
+            </div>
+        </fieldset>
+
+        <div class="separator clearing"></div>
+
+        <fieldset class="output_settings">
+            <div class="select_box">
+            <?php echo $this->fields['limit']; ?>
+            <label for="limit"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['hits_per_page']; ?></label>
+            </div>
+            <div class="select_box">
+            <?php echo $this->fields['direction']; ?>
+            </div>
+            <div class="select_box">
+            <label for="orderby"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['orderby']; ?></label>
+            <?php echo $this->fields['orderby']; ?>
+            </div>
+        </fieldset>
+
+        <div class="separator clearing"></div>
+
+        <div class="submit_container">
+            <input type="submit" class="submit" value="<?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['start_search']; ?>"/>
+            <input type="reset"  class="reset" value="<?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['clear_form']; ?>" onclick="return clearForm()">
+        </div>
+        <div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
+
+    </div>
+
+    </form>
+<!-- end form -->
+<?php endif; ?>
+
+
+
+
+
+<!-- show the results -->
+<?php if ($this->results && $this->status ==  'show_results'): ?>
+    <div class="result_container">
+        <div class="search_link"><a href="<?php echo $this->linkToForm; ?>">>>neue Suche</a></div>
+        <!-- show mysql query for debug  use -->
+        <!--<div><p style="font-size:9px;color:#228b22;"><?php echo $this->mysqlQuery; ?></p></div>-->
+
+        <!-- show pagination menu -->
+        <?php echo $this->pagination; ?>
+
+        <!-- show the results -->
+        <div id="result_container">
+            <?php if (strlen($this->items)): ?>
+            <div class="result_info_box"><?php echo sprintf($GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['msg_2'], $this->items); ?></div>
+            <?php endif; ?>
+            <table class="result_table">
+                <tr>
+                    <?php foreach ($this->arrListableFields as $field): ?>
+                    <th><?php echo $GLOBALS['TL_LANG']['tl_member'][$field][0]; ?></th>
+                    <?php endforeach; ?>
+                    <th>&nbsp;</th>
+                </tr>
+
+<?php foreach ($this->results as $arrResult): ?>
+                <tr>
+                    <?php foreach ($arrResult as $k => $value): ?>
+                    <?php if ($k == 'id') continue; ?>
+                    <td><?php echo $value; ?></td>
+                    <?php endforeach; ?>
+                    <td><a href="<?php echo sprintf($this->jumpTo, $arrResult['id']); ?>" title="mehr"><img src="system/modules/vereinsdatenbank_suchmodul/assets/images/information2.png" width="16"/></a></td>
+                </tr>
+<?php endforeach; ?>
+            </table>
+            <div class="duration"><?php echo sprintf($GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['request_time_duration'], $this->duration); ?></div>
+        </div>
+    </div>
+    <?php if($this->vdb_showMap): ?>
+    <div id="map-canvas" style="display:none; width:<?php echo $this->vdb_mapWidth; ?>px;  height:<?php echo $this->vdb_mapHeight; ?>px"></div>
+    <?php endif; ?>
+<?php echo $this->memberCoord; ?>
+
+<?php //echo $this->showTemplateVars(); ?>
+<?php endif; ?>
+</div>
+<!-- indexer::continue -->

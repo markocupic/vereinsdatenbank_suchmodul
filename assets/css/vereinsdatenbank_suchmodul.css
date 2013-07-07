@@ -21,13 +21,15 @@
     z-index: 9999;
 }
 
-
-
 /**
- * styling
- */
+* styling
+*/
 #mmbContent *, #mmbCloseLink {
     color: #fff;
+}
+
+#mmbContent h2 {
+    background: 0;
 }
 
 #mmbCloseLink:hover {
@@ -55,7 +57,16 @@
 
 }
 
-#mmbContent .captcha label {
+#mmbContent div.captcha {
+    padding: 0;
+}
+
+#mmbContent div.captcha, #mmbContent .captcha_text, #mmbContent div.captcha label {
+    background-color: #2E3639;
+    border: 0;
+}
+
+#mmbContent div.captcha label {
     display: inline;
 }
 
