@@ -61,16 +61,17 @@
     padding: 0;
 }
 
-#mmbContent div.captcha, #mmbContent .captcha_text, #mmbContent div.captcha label {
+#mmbContent .captcha, #mmbContent .captcha_text, #mmbContent .captcha label {
     background-color: #2E3639;
     border: 0;
 }
 
-#mmbContent div.captcha label {
-    display: inline;
+#mmbContent .captcha label {
+    display: block;
+    margin-top:10px;
 }
 
-#mmbContent input.text, #mmbContent .textarea, #mmbContent .password {
+#mmbContent input.text, #mmbContent textarea.textarea, #mmbContent input.password {
     /*experimental*/
     width: 350px;
     background-color: #62686b;
@@ -107,7 +108,7 @@
     background: #E51111;
 }
 
-#mmbContent .textarea {
+#mmbContent textarea.textarea {
     resize: none;
     height: 200px;
     padding: 10px;
