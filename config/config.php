@@ -34,4 +34,11 @@
 $GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche'] = 'ModuleVereinsdatenbankSearch';
 $GLOBALS['FE_MOD']['vereinsdatenbank']['vereinsuche_detail_view'] = 'ModuleVereinsdatenbankSearchDetailView';
 
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['parseBackendTemplate'][] = array('VereinsdatenbankSucheMaintenance', 'addFulltextKey');
+$GLOBALS['TL_HOOKS']['parseBackendTemplate'][] = array('VereinsdatenbankSucheMaintenance', 'addStoredProcedure');
+
 ?>

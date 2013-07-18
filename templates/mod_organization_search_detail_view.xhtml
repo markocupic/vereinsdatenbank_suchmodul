@@ -30,6 +30,13 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     </tr>
     <?php endif; ?>
 
+    <?php if ($this->website): ?>
+        <tr>
+            <td class="col_0"><?php echo $GLOBALS['TL_LANG']['tl_member']['website'][0]; ?></td>
+            <td class="col_1"><a href="<?php echo $this->website; ?>"><?php echo $this->website; ?></a></td>
+        </tr>
+    <?php endif; ?>
+
     <?php if ($this->strSections): ?>
     <tr>
         <td class="col_0"><?php echo $GLOBALS['TL_LANG']['vereinsdatenbank_suchmodul']['sections']; ?></td>

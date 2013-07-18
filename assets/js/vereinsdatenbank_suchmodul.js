@@ -83,21 +83,21 @@ function getMarkerFromAddress(map, address, title, clickable, url, icon) {
  * clear/reset the form
  */
 var clearForm = function () {
-    $$('.mod_organisationenSuche input[type=text]').each(function (el) {
+    $$('.mod_vereinsuche input[type=text]').each(function (el) {
         el.setProperty('value', '');
     });
 
-    $$('.mod_organisationenSuche input[type=checkbox]').each(function (el) {
+    $$('.mod_vereinsuche input[type=checkbox]').each(function (el) {
         el.removeProperty('checked');
     });
 
-    $$('.mod_organisationenSuche input[type=hidden]').each(function (el) {
+    $$('.mod_vereinsuche input[type=hidden]').each(function (el) {
         el.setProperty('value', '');
     });
     // add value to input[name=submit]
     if (document.id('tl_search_organization')) {
         document.id('tl_search_organization').addEvent('submit', function () {
-            $$('input[name=submit]').each(function (el) {
+            $$('.mod_vereinsuche input[name=submit]').each(function (el) {
                 el.setProperty('value', '1');
             });
         });

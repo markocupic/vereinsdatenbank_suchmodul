@@ -90,6 +90,12 @@ $GLOBALS['TL_JAVASCRIPT'][] = "http://maps.googleapis.com/maps/api/js?libraries=
     </div>
 
     </form>
+    
+    <script>
+        window.addEvent('domready', function () {
+            clearForm();
+        });
+    </script>
 <!-- end form -->
 <?php endif; ?>
 
